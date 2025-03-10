@@ -1,33 +1,36 @@
 "use client"
 
-// Redenumim componenta pentru a evita conflictele
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { toast } from "@/components/ui/use-toast" // Using shadcn's toast instead of sonner
+import { supabase } from "@/lib/supabase"
+import { useAuth } from "@/components/auth-provider"
+// Comentăm temporar importul pentru a evita eroarea
+// import { ArrowLeft, Loader2, Search } from 'lucide-react'
+
+interface Patient {
+  id: string
+  email: string
+  isAssigned?: boolean
+  user_id: string // Added missing required field
+}
+
+interface Diagnostic {
+  id: string
+  name: string
+  chat_id: string
+}
+
+interface PatientDiagnostic {
+  diagnostic_id: string
+}
+
 export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string }) {
-  // Importăm și folosim codul existent
-  const { useState, useEffect } = require("react")
-  const { useRouter } = require("next/navigation")
-  const { Button } = require("@/components/ui/button")
-  const { Card, CardContent, CardHeader, CardTitle } = require("@/components/ui/card")
-  const { Checkbox } = require("@/components/ui/checkbox")
-  const { Input } = require("@/components/ui/input")
-  const { Label } = require("@/components/ui/label")
-  const { toast } = require("sonner")
-  const { supabase } = require("@/lib/supabase")
-  const { useAuth } = require("@/components/auth-provider")
-  const { ArrowLeft, Loader2, Search } = require("lucide-react")
-
-  type Patient = {
-    id: string
-    user_id: string
-    email: string
-    isAssigned?: boolean
-  }
-
-  type Diagnostic = {
-    id: string
-    name: string
-    chat_id: string
-  }
-
   const { user } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -38,15 +41,14 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
 
   useEffect(() => {
     if (user) {
-      fetchData()
+      void fetchData()
     }
   }, [user])
 
-  const fetchData = async () => {
+  const fetchData = async (): Promise<void> => {
     try {
       setLoading(true)
 
-      // Obținem informațiile despre diagnostic
       const { data: diagnosticData, error: diagnosticError } = await supabase
         .from("diagnostics")
         .select("id, name, chat_id")
@@ -57,41 +59,46 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
 
       setDiagnostic(diagnosticData)
 
-      // Obținem lista de pacienți și statusul lor de asignare
       const { data: patientsData, error: patientsError } = await supabase
         .from("auth.users")
         .select(`
           id,
           email,
+          user_id,
           patient_diagnostics!inner(diagnostic_id)
         `)
         .eq("patient_diagnostics.diagnostic_id", diagnosticId)
 
       if (patientsError) throw patientsError
 
-      // Procesăm datele pentru a marca pacienții asignați
-      const processedPatients = patientsData.map((patient) => ({
+      const processedPatients: Patient[] = (patientsData || []).map((patient: any) => ({
         id: patient.id,
         email: patient.email,
-        isAssigned: patient.patient_diagnostics?.some((pd) => pd.diagnostic_id === diagnosticId) || false,
+        user_id: patient.user_id,
+        isAssigned:
+          (patient.patient_diagnostics as PatientDiagnostic[])?.some((pd) => pd.diagnostic_id === diagnosticId) ||
+          false,
       }))
 
       setPatients(processedPatients)
     } catch (error) {
       console.error("Error fetching data:", error)
-      toast.error("Nu s-au putut încărca datele")
+      toast({
+        title: "Eroare",
+        description: "Nu s-au putut încărca datele",
+        variant: "destructive",
+      })
       router.push("/doctor/diagnostics")
     } finally {
       setLoading(false)
     }
   }
 
-  const handleAssignmentChange = async (patientId: string, isAssigned: boolean) => {
+  const handleAssignmentChange = async (patientId: string, isAssigned: boolean): Promise<void> => {
     try {
       setSaving(true)
 
       if (isAssigned) {
-        // Adăugăm asignarea
         const { error } = await supabase.from("patient_diagnostics").insert([
           {
             patient_id: patientId,
@@ -101,7 +108,6 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
 
         if (error) throw error
       } else {
-        // Ștergem asignarea
         const { error } = await supabase.from("patient_diagnostics").delete().match({
           patient_id: patientId,
           diagnostic_id: diagnosticId,
@@ -110,13 +116,18 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
         if (error) throw error
       }
 
-      // Actualizăm starea locală
       setPatients(patients.map((p) => (p.id === patientId ? { ...p, isAssigned } : p)))
-
-      toast.success(isAssigned ? "Pacient asignat cu succes" : "Asignare ștearsă cu succes")
+      toast({
+        title: "Succes",
+        description: isAssigned ? "Pacient asignat cu succes" : "Asignare ștearsă cu succes",
+      })
     } catch (error) {
       console.error("Error updating assignment:", error)
-      toast.error("Nu s-a putut actualiza asignarea")
+      toast({
+        title: "Eroare",
+        description: "Nu s-a putut actualiza asignarea",
+        variant: "destructive",
+      })
     } finally {
       setSaving(false)
     }
@@ -127,7 +138,8 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        {/* <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /> */}
+        <div className="h-8 w-8 animate-spin text-muted-foreground">Loading...</div>
       </div>
     )
   }
@@ -139,8 +151,8 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={() => router.push("/doctor/diagnostics")}>
-          <ArrowLeft className="h-4 w-4" />
+        <Button onClick={() => router.push("/doctor/diagnostics")} className="p-2">
+          {/* <ArrowLeft className="h-4 w-4" /> */}←
         </Button>
         <h1 className="text-3xl font-bold">Asignare Pacienți</h1>
       </div>
@@ -151,7 +163,8 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex items-center space-x-2">
-            <Search className="w-4 h-4 text-muted-foreground" />
+            {/* <Search className="w-4 h-4 text-muted-foreground" /> */}
+            <span className="w-4 h-4 text-muted-foreground">🔍</span>
             <Input
               placeholder="Caută după email..."
               value={searchTerm}
@@ -169,7 +182,11 @@ export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string
                   <Checkbox
                     id={patient.id}
                     checked={patient.isAssigned}
-                    onCheckedChange={(checked) => handleAssignmentChange(patient.id, checked === true)}
+                    onCheckedChange={(checked: boolean | "indeterminate") => {
+                      if (typeof checked === "boolean") {
+                        void handleAssignmentChange(patient.id, checked)
+                      }
+                    }}
                     disabled={saving}
                   />
                   <Label htmlFor={patient.id} className="flex-1">

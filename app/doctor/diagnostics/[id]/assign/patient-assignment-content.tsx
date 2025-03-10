@@ -1,10 +1,6 @@
-import { PatientAssignmentContent } from "./patient-assignment-client"
+import { PatientAssignmentClient } from "./patient-assignment-client"
 
-export default function AssignPatientsPage({
-  params,
-}: {
-  params: { id: string }
-}) {
-  return <PatientAssignmentContent diagnosticId={params.id} />
+export function PatientAssignmentContent({ diagnosticId }: { diagnosticId: string }) {
+  return <PatientAssignmentClient diagnosticId={diagnosticId} />
 }
 
