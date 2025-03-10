@@ -1,10 +1,5 @@
-// Adaugă 'use client' la început
-'use client'
+import { PatientAssignmentContent } from "./patient-assignment-content"
 
-// Importă PatientAssignmentContent
-import { PatientAssignmentContent } from './patient-assignment-content'
-
-// Modifică definirea componentei
 export default function AssignPatientsPage({
   params,
 }: {
@@ -12,3 +7,4 @@ export default function AssignPatientsPage({
 }) {
   return <PatientAssignmentContent diagnosticId={params.id} />
 }
+
