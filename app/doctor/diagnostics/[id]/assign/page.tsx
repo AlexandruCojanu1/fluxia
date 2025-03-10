@@ -1,10 +1,9 @@
-// Folosim o abordare mai simplă pentru pagina de asignare
+// Folosim o abordare simplificată pentru a evita erorile de tipuri
 export default function AssignPatientsPage(props: any) {
-  // Extragem ID-ul din props
   const id = props.params?.id
 
   // Importăm dinamic componenta client
-  const PatientAssignmentClient = require("./patient-assignment-client").PatientAssignmentClient
+  const { PatientAssignmentClient } = require("./patient-assignment-client")
 
   return (
     <div>
