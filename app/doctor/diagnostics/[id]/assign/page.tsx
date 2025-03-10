@@ -1,17 +1,14 @@
-// Remove the "use client" directive
-// import type { Metadata } from 'next'
+// Adaugă 'use client' la început
+'use client'
 
-// Define the page component with the correct type for params
+// Importă PatientAssignmentContent
+import { PatientAssignmentContent } from './patient-assignment-content'
+
+// Modifică definirea componentei
 export default function AssignPatientsPage({
   params,
 }: {
   params: { id: string }
 }) {
-  return (
-    <div>
-      <h1>Assign Patients Page</h1>
-      <p>Diagnostic ID: {params.id}</p>
-    </div>
-  )
+  return <PatientAssignmentContent diagnosticId={params.id} />
 }
-
