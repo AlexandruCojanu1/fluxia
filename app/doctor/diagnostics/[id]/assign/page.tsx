@@ -1,14 +1,8 @@
-// Folosim o abordare simplificată pentru a evita erorile de tipuri
-export default function AssignPatientsPage(props: any) {
-  const id = props.params?.id
-
-  // Importăm dinamic componenta client
-  const { PatientAssignmentClient } = require("./patient-assignment-client")
-
+export default function AssignPatientsPage() {
   return (
-    <div>
-      <PatientAssignmentClient diagnosticId={id} />
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Assign Patients</h1>
+      <p>This page is temporarily unavailable.</p>
     </div>
-  )
+  );
 }
-
