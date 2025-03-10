@@ -1,31 +1,33 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast } from "sonner"
-import { supabase } from "@/lib/supabase"
-import { useAuth } from "@/components/auth-provider"
-import { ArrowLeft, Loader2, Search } from "lucide-react"
-
-type Patient = {
-  id: string
-  user_id: string
-  email: string
-  isAssigned?: boolean
-}
-
-type Diagnostic = {
-  id: string
-  name: string
-  chat_id: string
-}
-
+// Redenumim componenta pentru a evita conflictele
 export function PatientAssignmentClient({ diagnosticId }: { diagnosticId: string }) {
+  // Importăm și folosim codul existent
+  const { useState, useEffect } = require("react")
+  const { useRouter } = require("next/navigation")
+  const { Button } = require("@/components/ui/button")
+  const { Card, CardContent, CardHeader, CardTitle } = require("@/components/ui/card")
+  const { Checkbox } = require("@/components/ui/checkbox")
+  const { Input } = require("@/components/ui/input")
+  const { Label } = require("@/components/ui/label")
+  const { toast } = require("sonner")
+  const { supabase } = require("@/lib/supabase")
+  const { useAuth } = require("@/components/auth-provider")
+  const { ArrowLeft, Loader2, Search } = require("lucide-react")
+
+  type Patient = {
+    id: string
+    user_id: string
+    email: string
+    isAssigned?: boolean
+  }
+
+  type Diagnostic = {
+    id: string
+    name: string
+    chat_id: string
+  }
+
   const { user } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(true)

@@ -1,10 +1,16 @@
-import { PatientAssignmentContent } from "./patient-assignment-content"
+import { PatientAssignmentClient } from "./patient-assignment-client"
 
+// Folosim un server component pentru pagină
 export default function AssignPatientsPage({
   params,
 }: {
   params: { id: string }
 }) {
-  return <PatientAssignmentContent diagnosticId={params.id} />
+  // Pasăm ID-ul către componenta client
+  return (
+    <div>
+      <PatientAssignmentClient diagnosticId={params.id} />
+    </div>
+  )
 }
 
