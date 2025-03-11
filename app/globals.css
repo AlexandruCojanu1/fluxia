@@ -4,65 +4,26 @@
 
 @layer base {
   :root {
-    --background: 210 50% 98%;
+    --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 201 100% 45%;
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
-
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 201 100% 45%;
-
-    --radius: 0.75rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 201 100% 45%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 201 100% 45%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
   }
 }
 
@@ -72,76 +33,6 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-/* Stiluri pentru elemente medicale */
-.medical-card {
-  @apply relative overflow-hidden bg-white border border-medical-100 shadow-md;
-  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(224, 242, 254, 0.5) 100%);
-  backdrop-filter: blur(10px);
-}
-
-.medical-card::before {
-  content: "";
-  @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-medical-300 to-medical-600;
-}
-
-.medical-pulse {
-  @apply animate-pulse-opacity;
-}
-
-.medical-glow {
-  box-shadow: 0 0 15px rgba(13, 162, 231, 0.3);
-}
-
-.medical-pattern {
-  @apply bg-medical-pattern;
-}
-
-.ekg-line {
-  @apply relative;
-}
-
-.ekg-line::before {
-  content: "";
-  @apply absolute top-0 left-0 w-full h-1 bg-medical-500;
-  clip-path: path("M0,10 L5,10 L10,0 L15,20 L20,10 L25,10 L30,10 L35,0 L40,20 L45,10 L50,10 L55,10 L60,10");
-  animation: moveEkg 4s linear infinite;
-}
-
-@keyframes moveEkg {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.glass-effect {
-  @apply bg-white/80 backdrop-blur-md border border-white/20;
-  box-shadow: 0 8px 32px rgba(13, 162, 231, 0.1);
-}
-
-.futuristic-border {
-  @apply relative rounded-lg overflow-hidden;
-}
-
-.futuristic-border::after {
-  content: "";
-  @apply absolute inset-0 rounded-lg;
-  background: linear-gradient(90deg, transparent, rgba(13, 162, 231, 0.5), transparent);
-  background-size: 200% 100%;
-  animation: borderGlow 3s linear infinite;
-}
-
-@keyframes borderGlow {
-  0% {
-    background-position: 100% 0;
-  }
-  100% {
-    background-position: -100% 0;
   }
 }
 
